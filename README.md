@@ -149,7 +149,7 @@ Get Schedule
 {"traceId": "123456","method": "bypassV2","debugMode": false,"payload": {"data": {"maxId": 0},"method": "getSchedule","source": "APP"}}
 ```
 
-### Example of reading a value from the MQTT broker and showing the data in HA
+### Example of reading a value from the MQTT broker and showing the data in HA (add to configuration.yaml)
 
 ```yaml
 mqtt:
@@ -161,5 +161,37 @@ mqtt:
         "{{ value_json.data.changedStatus.displayPower
         if value_json.data.changedStatus.displayPower is defined
         else value_json.data.unchangedStatus.displayPower }}"
+```
+
+### Example of response to `mqtt/[LEVOITID]/v2/req` by device to MQTT broker after an action 
+
+You will notice that `changedStatus` registers the change that happened. 
+
+```json
+{
+    "context": {
+        "traceId": "1234",
+        "method": "statusChangeNtyV2",
+        "pid": "xxxx",
+        "cid": "[LEVOITID]",
+        "deviceRegion": "EU"
+    },
+    "data": {
+        "changedStatus": {
+            "switch1": "off"
+        },
+        "unchangedStatus": {
+            "mode": "sleep",
+            "displayPower": "on",
+            "displayConfig": "on",
+            "filterLife": 11,
+            "fanSpeedLevel": 2,
+            "childLock": false,
+            "displayForever": false,
+            "nightLightMode": "off"
+        },
+        "changeReason": "Device"
+    }
+}
 ```
 
