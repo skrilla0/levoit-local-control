@@ -2,7 +2,7 @@
 If you have a Levoit 200s ([https://levoit.com/products/core-200s-smart-air-purifier](https://levoit.com/products/core-200s-smart-air-purifier)) there is a way to control it without any hardware modifications. 
 
 ## Configure Home Assistant to work with Levoit
-The Levoit makes use of a MQTT (`mqtt/[LEVOITID]/v2/`). All you need to do is setup a MQTT on port 1883 and add TLS support (self-signed is fine). 
+The Levoit makes use of a MQTT (`mqtt/[LEVOITID]/v2/`). All you need to do is setup a MQTT on port 1883 and add TLS support (self-signed is fine). [This is important otherwise  Levoit wont connect]
 
 Setup a rewrite rule for the DNS values: 
 * vdmpmqtt.vesync.com pointing to your [YOUR_MQTT_SERVER] 
@@ -149,4 +149,17 @@ Get Schedule
 {"traceId": "123456","method": "bypassV2","debugMode": false,"payload": {"data": {"maxId": 0},"method": "getSchedule","source": "APP"}}
 ```
 
+### Example of reading a value from the MQTT broker and showing the data in HA
+
+```yaml
+mqtt:
+  sensor:
+    - name: "Levoit Fan state"
+      unique_id: "xxxx-xxxx-xxx-xxxx-xxxxx"
+      state_topic: "mqtt/[LEVOITID]/v2/req"
+      value_template: >-
+        "{{ value_json.data.changedStatus.displayPower
+        if value_json.data.changedStatus.displayPower is defined
+        else value_json.data.unchangedStatus.displayPower }}"
+```
 
